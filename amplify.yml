@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm --prefix packages/main ci
+    build:
+      commands:
+        # Replace environment variables in production environment file
+        - sed -i "s|\${API_URL}|$API_URL|g" packages/main/src/environments/environment.production.ts
+        - sed -i "s|\${AUTH_URL}|$AUTH_URL|g" packages/main/src/environments/environment.production.ts
+        - npm --prefix packages/main run build
+  artifacts:
+    baseDirectory: packages/main/dist/Modernize
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - packages/main/node_modules/**/*
