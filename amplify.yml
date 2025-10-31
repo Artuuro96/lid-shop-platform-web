@@ -3,17 +3,17 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm --prefix packages/main ci
+        - npm ci
     build:
       commands:
         # Replace environment variables in production environment file
-        - sed -i "s|\${API_URL}|$API_URL|g" packages/main/src/environments/environment.production.ts
-        - sed -i "s|\${AUTH_URL}|$AUTH_URL|g" packages/main/src/environments/environment.production.ts
-        - npm --prefix packages/main run build
+        - sed -i "s|\${API_URL}|$API_URL|g" src/environments/environment.production.ts
+        - sed -i "s|\${AUTH_URL}|$AUTH_URL|g" src/environments/environment.production.ts
+        - npm run build
   artifacts:
-    baseDirectory: packages/main/dist/Modernize
+    baseDirectory: dist/lid-shop-web-platform
     files:
       - '**/*'
   cache:
     paths:
-      - packages/main/node_modules/**/*
+      - node_modules/**/*
