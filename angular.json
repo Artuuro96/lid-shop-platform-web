@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Modernize": {
+    "lid-shop-platform-web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -19,7 +19,7 @@
           "options": {
             "allowedCommonJsDependencies": ["apexcharts", "bezier-easing", "chance"],
             "outputPath": {
-              "base": "dist/Modernize"
+              "base": "dist/lid-shop-platform-web"
             },
             "index": "src/index.html",
             "polyfills": ["zone.js"],

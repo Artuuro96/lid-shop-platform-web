@@ -8,7 +8,7 @@ frontend:
       commands:
         # Replace environment variables in production environment file
         - sed -i "s|\${API_URL}|$API_URL|g" src/environments/environment.production.ts
-        - sed -i "s|\${AUTH_URL}|$AUTH_URL|g" src/environments/environment.production.ts
+        - sed -i "s|\${AUTH_BASE_URL}|$AUTH_BASE_URL|g" src/environments/environment.production.ts
         - npm run build
   artifacts:
     baseDirectory: dist/lid-shop-web-platform
