@@ -78,10 +78,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Modernize:build:production"
+              "buildTarget": "lid-shop-platform-web:build:production"
             },
             "development": {
-              "buildTarget": "Modernize:build:development"
+              "buildTarget": "lid-shop-platform-web:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -89,7 +89,7 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "Modernize:build"
+            "buildTarget": "lid-shop-platform-web:build"
           }
         },
         "test": {

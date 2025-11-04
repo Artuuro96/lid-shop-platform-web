@@ -17,8 +17,29 @@ export const routes: Routes = [
       {
         path: 'clientes',
         loadComponent: () =>
-          import('./pages/clientes/clientes.component').then(
-            (m) => m.ClientesComponent
+          import('./pages/clients/clients.component').then(
+            (m) => m.ClientsComponent
+          ),
+      },
+      {
+        path: 'clientes/nuevo',
+        loadComponent: () =>
+          import('./pages/client-create/client-create.component').then(
+            (m) => m.ClientCreateComponent
+          ),
+      },
+      {
+        path: 'clientes/:id',
+        loadComponent: () =>
+          import('./pages/client-detail/client-detail.component').then(
+            (m) => m.ClientDetailComponent
+          ),
+      },
+      {
+        path: 'clientes/:id/editar',
+        loadComponent: () =>
+          import('./pages/client-edit/client-edit.component').then(
+            (m) => m.ClientEditComponent
           ),
       },
       {

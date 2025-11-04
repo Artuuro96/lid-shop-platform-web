@@ -40,6 +40,8 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { provideHighlightOptions } from 'ngx-highlightjs';
 import 'highlight.js/styles/atom-one-dark.min.css';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient): any {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -69,11 +71,13 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
     provideClientHydration(),
     provideAnimationsAsync(),
     importProvidersFrom(
       FormsModule,
-      ToastrModule.forRoot(),
+      
       ReactiveFormsModule,
       MaterialModule,
       NgxPermissionsModule.forRoot(),

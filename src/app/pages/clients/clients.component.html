@@ -1,0 +1,47 @@
+<div class="friend-contents">
+    <div class="friend-header-content">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <button mat-flat-button color="primary" [routerLink]="['/clientes/nuevo']">
+              <mat-icon>person_add</mat-icon>
+              &nbsp;Nuevo Cliente
+            </button>
+            <div class="flex-grow-1 d-flex justify-content-end align-items-center">
+              <mat-form-field appearance="outline" class="w-30 search-bar-style">
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput placeholder="Buscar Cliente"  [(ngModel)]="searchText"
+                (ngModelChange)="applyFilter()"/>
+              </mat-form-field>
+            </div>
+          </div>
+    </div>
+    <div class="row">
+        @for(client of filteredClients; track client._id) {
+        <div class="col-sm-6 col-lg-4">
+          <mat-card class="cardWithShadow overflow-hidden">
+            <mat-card-content class="text-center p-y-24">
+               <img [src]="'assets/images/profile/user-' + (($index % 12) + 1) + '.jpg'" class="rounded-circle" width="80" height="80" style="object-fit: cover;" />
+              <mat-card-title class="f-s-18 m-b-0 m-t-16">{{
+                client.name
+                }} {{ client.lastName }}</mat-card-title>
+               <mat-card-subtitle class="f-s-12 f-s-14">{{
+                 client.email || 'Sin correo'
+                 }}</mat-card-subtitle>
+               <div class="f-s-12 f-s-14 m-t-8">{{ client.cellphone || 'Sin teléfono' }}</div>
+             </mat-card-content>
+             <div class="b-t-1 p-x-24 p-y-8 d-flex justify-content-center bg-light-primary">
+               <button mat-icon-button class="d-flex justify-content-center" aria-label="Ver detalles" [routerLink]="['/clientes', client._id]">
+                 <i-tabler name="eye" class="icon-18 d-flex text-primary"></i-tabler>
+               </button>
+               <button mat-icon-button class="d-flex justify-content-center" aria-label="Editar" [routerLink]="['/clientes', client._id, 'editar']">
+                 <i-tabler name="edit" class="icon-18 d-flex text-secondary"></i-tabler>
+               </button>
+               <button mat-icon-button class="d-flex justify-content-center" aria-label="Borrar" (click)="openDeleteDialog(client)">
+                 <i-tabler name="trash" class="icon-18 d-flex text-error"></i-tabler>
+               </button>
+             </div>
+           </mat-card>
+         </div>
+        }
+      </div>
+</div>
+<app-loading-overlay></app-loading-overlay>

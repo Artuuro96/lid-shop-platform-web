@@ -1,0 +1,75 @@
+<div class="container p-24">
+  <h2 class="m-b-16">Nuevo Cliente</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="d-grid gap-16">
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="name" />
+          <mat-error *ngIf="f.name.touched && f.name.errors?.['required']">Requerido</mat-error>
+          <mat-error *ngIf="f.name.touched && f.name.errors?.['minlength']">Mínimo 2 caracteres</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="lastName" />
+          <mat-error *ngIf="f.lastName.touched && f.lastName.errors?.['required']">Requerido</mat-error>
+          <mat-error *ngIf="f.lastName.touched && f.lastName.errors?.['minlength']">Mínimo 2 caracteres</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+          <mat-error *ngIf="f.email.touched && f.email.errors?.['email']">Formato inválido</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="cellphone" />
+          <mat-error *ngIf="f.cellphone.touched && f.cellphone.errors?.['pattern']">Formato inválido</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Edad</mat-label>
+          <input matInput type="number" formControlName="age" />
+          <mat-error *ngIf="f.age.touched && f.age.errors?.['min']">Mínimo 0</mat-error>
+          <mat-error *ngIf="f.age.touched && f.age.errors?.['max']">Máximo 120</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Dirección</mat-label>
+          <input matInput formControlName="address" />
+          <mat-error *ngIf="f.address.touched && f.address.errors?.['required']">Requerido</mat-error>
+          <mat-error *ngIf="f.address.touched && f.address.errors?.['minlength']">Mínimo 5 caracteres</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Puntos</mat-label>
+          <input matInput type="number" formControlName="points" />
+          <mat-error *ngIf="f.points.touched && f.points.errors?.['min']">No negativo</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex gap-12">
+      <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Crear</button>
+      <button mat-stroked-button type="button" (click)="cancel()" [disabled]="submitting">Cancelar</button>
+    </div>
+  </form>
+</div>

@@ -1,2 +1,2 @@
-# Modernize-Angular-pro
-Modernize Angular Admin Dashboard
+# Lid-Shop-Platform-Web
+Lid Shop Platform Web

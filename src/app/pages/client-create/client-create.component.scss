@@ -1,0 +1,11 @@
+.container {
+  max-width: 900px;
+}
+.row {
+  display: flex;
+  gap: 16px;
+}
+.col-md-4, .col-md-6, .col-md-8 {
+  flex: 1;
+}
+.w-100 { width: 100%; }

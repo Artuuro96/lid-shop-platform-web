@@ -1,11 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-
-interface LoginRequest {
-  username: string;
-  password: string;
-}
 
 interface LoginResponse {
   access_token?: string;
@@ -19,13 +14,23 @@ export class AuthService {
   private tokenSignal = signal<string | null>(this.readToken());
 
   // Adjust to match your backend base URL
-  private readonly baseUrl = '/api';
+  private readonly baseUrl = 'https://auth.lid-shop.com/realms/lid-shop/protocol/openid-connect';
 
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<LoginResponse> {
-    const body: LoginRequest = { username, password };
-    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, body).pipe(
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    
+    const body = new HttpParams()
+      .set('username', username)
+      .set('password', password)
+      .set('grant_type', '')
+      .set('client_id', '')
+      .set('client_secret', '')
+    
+    return this.http.post<LoginResponse>(`${this.baseUrl}/token`, body.toString(), { headers }).pipe(
       tap((resp) => {
         const token = resp.access_token || resp.token || resp.accessToken;
         if (token) {

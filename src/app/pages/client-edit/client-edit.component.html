@@ -1,0 +1,80 @@
+<div class="p-24">
+  <div class="d-flex align-items-center gap-12 m-b-16">
+    <button mat-icon-button [routerLink]="['/clientes', clientId]" aria-label="Volver">
+      <i-tabler name="arrow-left" class="icon-18 d-flex"></i-tabler>
+    </button>
+    <h2 class="m-0">Editar Cliente</h2>
+  </div>
+
+  <ng-container *ngIf="!loading; else loadingTpl">
+    <div class="d-flex align-items-center gap-16 m-b-24">
+      <img [src]="avatarPreviewUrl || defaultAvatarUrl" class="rounded-circle" width="96" height="96" style="object-fit: cover;" />
+      <div class="d-flex gap-8">
+        <button mat-stroked-button color="primary" (click)="fileInput.click()">
+          Cambiar avatar
+        </button>
+        <input #fileInput type="file" accept="image/*" (change)="onAvatarChange($event)" hidden />
+        <button mat-stroked-button color="warn" (click)="avatarPreviewUrl = null; avatarFile = null" [disabled]="!avatarPreviewUrl">
+          Quitar avatar
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="lastName" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Correo</mat-label>
+          <input matInput formControlName="email" type="email" />
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Celular</mat-label>
+          <input matInput formControlName="cellphone" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Dirección</mat-label>
+          <input matInput formControlName="address" />
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Edad</mat-label>
+          <input matInput formControlName="age" type="number" />
+        </mat-form-field>
+      </div>
+
+      <div class="d-flex gap-8 m-t-16">
+        <button mat-flat-button color="primary" (click)="onSave()" [disabled]="saving || form.invalid">
+          Guardar
+        </button>
+        <button mat-stroked-button color="basic" (click)="onCancel()" [disabled]="saving">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    <div class="d-flex align-items-center gap-8">
+      <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+      <span>Cargando cliente...</span>
+    </div>
+  </ng-template>
+</div>

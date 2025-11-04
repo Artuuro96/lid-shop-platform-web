@@ -1,0 +1,7 @@
+export enum SaleStatusEnum {
+  CREATED = 'CREATED',
+  CONFIRMED = 'CONFIRMED',
+  DELIVERED = 'DELIVERED',
+  CANCELED = 'CANCELED',
+  PENDING = 'PENDING',
+}
