@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LoadingOverlayComponent } from './components/common/loading-overlay/loading-overlay.component';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet],
+    imports: [RouterOutlet, LoadingOverlayComponent],
     templateUrl: './app.component.html'
 })
 export class AppComponent {

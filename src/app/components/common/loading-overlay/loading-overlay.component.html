@@ -1,5 +1,5 @@
 <ng-container *ngIf="loading$ | async">
-  <div class="overlay" aria-live="polite" aria-busy="true">
+  <div class="overlay" [class.no-blur]="noBlur" aria-live="polite" aria-busy="true">
     <div class="spinner-wrap">
       <mat-progress-spinner
         mode="indeterminate"

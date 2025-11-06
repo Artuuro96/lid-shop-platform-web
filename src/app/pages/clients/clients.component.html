@@ -1,19 +1,33 @@
+<div class="container-fluid">
+  <!-- Search and Add Card -->
+  <mat-card class="cardWithShadow">
+    <mat-card-content>
+      <div class="row justify-content-between gap-16">
+        <div class="col-lg-4">
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <input
+              matInput
+              placeholder="Buscar Cliente"
+              [(ngModel)]="searchText"
+              (ngModelChange)="applyFilter()"
+            />
+            <mat-icon matSuffix>
+              <i-tabler name="search" class="icon-20 d-flex m-t-2"></i-tabler>
+            </mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-4 d-flex align-items-center justify-content-end">
+          <button mat-flat-button [routerLink]="['/clientes/new']" color="primary">
+            <mat-icon>person_add</mat-icon>
+            &nbsp;Nuevo Cliente
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
 <div class="friend-contents">
-    <div class="friend-header-content">
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-            <button mat-flat-button color="primary" [routerLink]="['/clientes/nuevo']">
-              <mat-icon>person_add</mat-icon>
-              &nbsp;Nuevo Cliente
-            </button>
-            <div class="flex-grow-1 d-flex justify-content-end align-items-center">
-              <mat-form-field appearance="outline" class="w-30 search-bar-style">
-                <mat-icon matPrefix>search</mat-icon>
-                <input matInput placeholder="Buscar Cliente"  [(ngModel)]="searchText"
-                (ngModelChange)="applyFilter()"/>
-              </mat-form-field>
-            </div>
-          </div>
-    </div>
     <div class="row">
         @for(client of filteredClients; track client._id) {
         <div class="col-sm-6 col-lg-4">

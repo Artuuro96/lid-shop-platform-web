@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import { LoadingService } from 'src/app/services/loading.service';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-loading-overlay',
@@ -22,6 +24,10 @@ import { LoadingService } from 'src/app/services/loading.service';
       z-index: 2147483647; /* max to ensure visibility above all */
       pointer-events: auto;
     }
+    .overlay.no-blur {
+      backdrop-filter: none;
+      background: transparent;
+    }
     .spinner-wrap {
       display: flex;
       flex-direction: column;
@@ -38,5 +44,19 @@ import { LoadingService } from 'src/app/services/loading.service';
 })
 export class LoadingOverlayComponent {
   loading$ = this.loadingService.loading$;
-  constructor(private loadingService: LoadingService) {}
+  noBlur = false;
+
+  constructor(private loadingService: LoadingService, private router: Router) {
+    this.updateBlurFlag(this.router.url);
+    this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        this.updateBlurFlag(e.urlAfterRedirects);
+      });
+  }
+
+  private updateBlurFlag(url: string) {
+    // Disable blur specifically on the login route
+    this.noBlur = url.startsWith('/authentication/login');
+  }
 }

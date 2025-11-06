@@ -1,0 +1,230 @@
+<div class="container-fluid">
+  <div class="detail-card">
+    <a mat-button color="primary" [routerLink]="['/pedidos']">
+      <i-tabler name="arrow-left" class="icon-18 m-r-8"></i-tabler>
+      Volver a pedidos
+    </a>
+    <!-- First row: two cards, full height -->
+    <div class="row align-items-stretch">
+      <!-- General Info Card -->
+      <div class="col-lg-6 col-md-6 m-b-16 d-flex">
+        <mat-card class="cardWithShadow w-100" style="height: 100%; min-height: 360px;">
+          <mat-card-content>
+            <div class="d-flex align-items-center gap-8 m-b-12">
+              <!-- Removed icon to use full horizontal space -->
+              <div>
+                <h4 class="f-s-18 f-w-600 m-b-0">{{ order?.orderId }}</h4>
+                <div class="f-s-13 text-secondary">Pedido</div>
+              </div>
+              <span class="m-l-auto">
+                <!-- payment status badge moved to Pagos card -->
+              </span>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="row p-y-12 justify-content-between">
+              <div class="col-6">
+                <span class="f-w-600 f-s-15 d-block m-b-4">Estado</span>
+                <app-order-status-chip [status]="order?.status ?? ''"></app-order-status-chip>
+              </div>
+              <div class="col-6">
+                <span class="f-w-600 f-s-15 d-block m-b-4">Fecha</span>
+                <h6 class="m-t-0 m-b-0 f-w-500 f-s-14">{{ order?.createdAt | date:'dd-MM-yyyy' }}</h6>
+              </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="row m-y-12">
+              <div class="col-6">
+                <span class="f-w-600 f-s-15 d-block m-b-4">Vendido Por</span>
+                <h6 class="m-t-0 m-b-0 f-w-500 f-s-14">{{ order?.vendorName }}</h6>
+              </div>
+              <div class="col-6">
+                <span class="f-w-600 f-s-15 d-block m-b-4">Cliente</span>
+                <h6 class="m-t-0 m-b-0 f-w-500 f-s-14">{{ order?.clientName }}</h6>
+              </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="text-right m-t-12">
+              <h3 class="m-b-0 f-s-18">Total: {{ total | currency:'USD':'symbol':'1.2-2' }}</h3>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Articles Card (no collapsible) -->
+      <div class="col-lg-6 col-md-6 m-b-16 d-flex">
+        <mat-card class="cardWithShadow w-100" style="height: 100%; min-height: 360px;">
+          <mat-card-content>
+            <div class="d-flex align-items-center justify-content-between m-b-8">
+              <h5 class="m-b-0 f-s-16 f-w-600">Artículos</h5>
+            </div>
+
+            <div class="table-responsive" *ngIf="articlesOrder.length; else noItems">
+              <table mat-table [dataSource]="articlesOrder" class="w-100">
+                <ng-container matColumnDef="article">
+                  <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">Artículo</th>
+                  <td mat-cell *matCellDef="let item" class="f-s-14">{{ item.name || item.code }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">Precio</th>
+                  <td mat-cell *matCellDef="let item" class="f-s-14">{{ item.lidShopPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="subtotal">
+                  <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">Total</th>
+                  <td mat-cell *matCellDef="let item" class="f-s-14">{{ item.lidShopPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="itemDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: itemDisplayedColumns"></tr>
+              </table>
+            </div>
+            <ng-template #noItems>
+              <div class="text-secondary f-s-14">No hay artículos asociados a este pedido.</div>
+            </ng-template>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Second row: full-width card -->
+    <div class="row align-items-stretch">
+      <!-- Payment IDs Card fullwidth -->
+      <div class="col-12 m-b-16 d-flex">
+        <mat-card class="cardWithShadow w-100 status-card" style="height: 100%; min-height: 280px;">
+          <mat-card-content>
+            <h5 class="m-b-8 f-s-16 f-w-600">Pagos</h5>
+            <!-- Removed inline status text -->
+            <div *ngIf="payments?.length; else noPayments">
+              <table mat-table [dataSource]="payments" class="w-100">
+                <ng-container matColumnDef="updatedAt">
+                  <th mat-header-cell *matHeaderCellDef>Ultima Actualización</th>
+                  <td mat-cell *matCellDef="let p">{{ p.updatedAt | date:'short' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="updatedBy">
+                  <th mat-header-cell *matHeaderCellDef>Modificado Por</th>
+                  <td mat-cell *matCellDef="let p">{{ p.updatedBy }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="createdBy">
+                  <th mat-header-cell *matHeaderCellDef>Creado Por</th>
+                  <td mat-cell *matCellDef="let p">{{ p.createdBy }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                  <th mat-header-cell *matHeaderCellDef>Monto a Pagar</th>
+                  <td mat-cell *matCellDef="let p">{{ p.quantity | currency }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="amountReceived">
+                  <th mat-header-cell *matHeaderCellDef>Monto Recibido</th>
+                  <td mat-cell *matCellDef="let p">{{ p.amountReceived | currency }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dateToPay">
+                  <th mat-header-cell *matHeaderCellDef>Fecha de Pago</th>
+                  <td mat-cell *matCellDef="let p">{{ p.dateToPay | date:'short' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let p">
+                    <app-payment-status-chip [status]="p.status ?? ''"></app-payment-status-chip>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                  <td mat-cell *matCellDef="let p">
+                    <div class="w-100">
+                      <button mat-stroked-button color="primary" class="action-icon-button w-100" matTooltip="Registrar pago" aria-label="Registrar pago" (click)="openRegisterPayment(p)">
+                        <i-tabler name="cash" class="icon-20 d-flex text-primary"></i-tabler>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="paymentsDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: paymentsDisplayedColumns;"></tr>
+              </table>
+            </div>
+            <ng-template #noPayments>
+              <div class="text-secondary f-s-14">No hay pagos registrados.</div>
+            </ng-template>
+
+            <!-- Dialog template for registering payment -->
+            <ng-template #registerPaymentDialog>
+              <ng-container >
+              <h2 mat-dialog-title class="f-s-18 f-w-600 m-b-4 p-x-16 p-t-12">Registrar pago</h2>
+              <div class="text-secondary f-s-12 m-b-12 p-x-16">Ingresa el monto recibido, estado del pago y adjunta un comprobante si lo tienes.</div>
+              <mat-dialog-content class="p-x-16 p-b-8">
+                <div class="row m-b-12">
+                  <div class="col-12 col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Monto recibido</mat-label>
+                      <input matInput type="number" min="0" step="0.01" [(ngModel)]="dialogAmount" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Estado</mat-label>
+                      <mat-select [(ngModel)]="dialogStatus">
+                        <mat-option [value]="'PENDING'">Pendiente</mat-option>
+                        <mat-option [value]="'VALIDATING'">Validando</mat-option>
+                        <mat-option [value]="'DELAYED'">Retrasado</mat-option>
+                        <mat-option [value]="'CONFIRMED'">Confirmado</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <div class="m-t-12">
+                  <span class="f-w-600 f-s-14 d-block m-b-8">Comprobante de pago</span>
+                  <div class="row align-items-center">
+                    <div class="col-12 col-sm-6 m-b-8">
+                      <button mat-stroked-button color="primary" (click)="receiptInput.click()">
+                        <i-tabler name="upload" class="icon-18 m-r-8"></i-tabler>
+                        Subir imagen
+                      </button>
+                      <input type="file" accept="image/*" (change)="onReceiptSelected($event)" #receiptInput hidden />
+                      <div class="f-s-12 text-secondary m-t-8" *ngIf="receiptFile as file">{{ file.name }}</div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                      <div class="border rounded p-8 d-flex align-items-center justify-content-center" style="height: 180px;" *ngIf="receiptPreviewUrl; else noPreview">
+                        <img [src]="receiptPreviewUrl" alt="Comprobante" class="img-fluid rounded shadow-sm" style="max-height: 160px;" />
+                      </div>
+                      <ng-template #noPreview>
+                        <div class="text-secondary f-s-12 d-flex align-items-center justify-content-center border rounded" style="height: 180px;">Sin imagen seleccionada</div>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="d-flex m-t-8" *ngIf="receiptPreviewUrl">
+                    <button mat-button color="warn" (click)="clearReceipt()">
+                      <i-tabler name="trash" class="icon-18 m-r-6"></i-tabler>
+                      Quitar imagen
+                    </button>
+                  </div>
+                </div>
+              </mat-dialog-content>
+
+              <mat-dialog-actions align="end" class="gap-8 m-t-8 p-x-16 p-b-12">
+                <button mat-button mat-dialog-close>Cancelar</button>
+                <button mat-flat-button color="primary" (click)="saveRegisterPayment()" [disabled]="dialogAmount < 0">Guardar</button>
+              </mat-dialog-actions>
+              </ng-container>
+            </ng-template>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

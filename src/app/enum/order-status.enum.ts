@@ -1,0 +1,13 @@
+export enum OrderStatusEnum {
+  CREATED = 'CREATED',
+  CONFIRMED = 'CONFIRMED',
+  DELIVERED_USA = 'DELIVERED_USA',
+  DELIVERED_MX = 'DELIVERED_MX',
+  DELIVERED_CLIENT = 'DELIVERED_CLIENT',
+}
+
+export enum OrderPaymentStatusEnum {
+  PENDING = 'PENDING',
+  DELAYED = 'DELAYED',
+  SETTLED = 'SETTLED',
+}

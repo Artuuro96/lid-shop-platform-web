@@ -7,7 +7,7 @@ import { ClientsService } from 'src/app/services/clients.service';
 import { ClientDetail } from 'src/app/interfaces/client.interface';
 import { SaleTypeChipComponent } from 'src/app/components/common/chips/sale-type-chip.component';
 import { SaleStatusChipComponent } from 'src/app/components/common/chips/sale-status-chip.component';
-import { SalePaymentStatusChipComponent } from 'src/app/components/common/chips/sale-payment-status-chip.component1';
+import { SalePaymentStatusChipComponent } from 'src/app/components/common/chips/sale-payment-status-chip.component';
 
 @Component({
   selector: 'app-client-detail',

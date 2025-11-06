@@ -45,8 +45,15 @@ export const routes: Routes = [
       {
         path: 'pedidos',
         loadComponent: () =>
-          import('./pages/pedidos/pedidos.component').then(
-            (m) => m.PedidosComponent
+          import('./pages/orders/orders.component').then(
+            (m) => m.OrdersComponent
+          ),
+      },
+      {
+        path: 'pedidos/:id',
+        loadComponent: () =>
+          import('./pages/order-detail/order-detail.component').then(
+            (m) => m.OrderDetailComponent
           ),
       },
       {
@@ -59,8 +66,8 @@ export const routes: Routes = [
       {
         path: 'ordenes',
         loadComponent: () =>
-          import('./pages/ordenes/ordenes.component').then(
-            (m) => m.OrdenesComponent
+          import('./pages/orders/orders.component').then(
+            (m) => m.OrdersComponent
           ),
       },
       {
