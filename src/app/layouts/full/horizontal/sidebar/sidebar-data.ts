@@ -186,7 +186,7 @@ export const navItems: NavItem[] = [
           {
             displayName: 'Add Product',
             iconName: 'point',
-            route: 'apps/product/add-product',
+            route: 'inventario/producto/nuevo',
           },
           {
             displayName: 'Edit Product',

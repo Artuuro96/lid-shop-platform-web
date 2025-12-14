@@ -3,6 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
 import { OrdersService } from 'src/app/services/orders.service';
+import { PaymentsService } from 'src/app/services/payments.service';
 import { Order } from 'src/app/interfaces/order.interface';
 import { Article } from 'src/app/interfaces/order-article.interface';
 import { IconModule } from 'src/app/icon/icon.module';
@@ -11,6 +12,7 @@ import { PaymentStatusChipComponent } from 'src/app/components/common/chips/paym
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderStatusChipComponent } from 'src/app/components/common/chips/order-status-chip.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-order-detail',
@@ -73,7 +75,13 @@ export class OrderDetailComponent implements OnInit {
   receiptPreviewUrl: string | null = null;
   receiptFile: File | null = null;
 
-  constructor(private route: ActivatedRoute, private ordersService: OrdersService, private dialog: MatDialog) {}
+  constructor(
+    private route: ActivatedRoute,
+    private ordersService: OrdersService,
+    private paymentsService: PaymentsService,
+    private toastr: ToastrService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -106,7 +114,7 @@ export class OrderDetailComponent implements OnInit {
 
   openRegisterPayment(p: Payment): void {
     this.currentPayment = p;
-    this.dialogAmount = (p as any).amountReceived ?? 0;
+    this.dialogAmount = p.amountReceived ?? 0;
     this.dialogStatus = (p.status || 'PENDING');
     this.receiptPreviewUrl = (p as any).receiptImageUrl || null;
     this.receiptFile = null;
@@ -115,14 +123,41 @@ export class OrderDetailComponent implements OnInit {
 
   saveRegisterPayment(): void {
     if (!this.currentPayment) return;
-    (this.currentPayment as any).amountReceived = this.dialogAmount;
-    this.currentPayment.status = this.dialogStatus; // store as enum uppercase
-    this.currentPayment.updatedAt = new Date().toISOString();
-    (this.currentPayment as any).receiptImageUrl = this.receiptPreviewUrl || undefined;
-    (this.currentPayment as any).receiptImageName = this.receiptFile?.name || undefined;
-    // trigger table update
-    this.payments = [...this.payments];
-    this.dialog.closeAll();
+    const maxAmount = this.currentPayment.quantity ?? 0;
+    if (this.dialogAmount > maxAmount) {
+      this.toastr.error('El monto recibido no puede ser mayor al monto a pagar.', 'Monto inválido');
+      // Prevent save if invalid
+      return;
+    }
+    const id = this.currentPayment._id;
+    if (!id) {
+      console.warn('Payment ID missing, cannot register');
+      return;
+    }
+
+    const dto: Partial<Payment> = {
+      amountReceived: this.dialogAmount,
+      status: this.dialogStatus,
+    };
+
+    this.loading = true;
+    this.paymentsService.registerPayment(id, dto, this.receiptFile || undefined).subscribe({
+      next: (resp) => {
+        const updated = resp.data;
+        if (updated) {
+          // Update local list with returned payment
+          this.payments = this.payments.map(p => p._id === updated._id ? { ...p, ...updated } : p);
+        }
+        this.dialog.closeAll();
+        this.loading = false;
+        this.receiptFile = null;
+        this.receiptPreviewUrl = null;
+      },
+      error: (err) => {
+        console.error('Error registering payment', err);
+        this.loading = false;
+      }
+    });
   }
 
   onReceiptSelected(event: Event): void {

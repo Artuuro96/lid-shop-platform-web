@@ -1,10 +1,11 @@
-<h2 mat-dialog-title>Delete Confirmation</h2>
+<h2 mat-dialog-title>Eliminar articulo</h2>
 <mat-dialog-content>
-  Would you like to delete
-  {{ itemCount > 1 ? "these products" : "this product" }}?
+  ¿Estás seguro de que quieres eliminar este producto?
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button mat-dialog-close>
+    Cancelar
+  </button>
   <button
     mat-button
     mat-dialog-close
@@ -12,6 +13,6 @@
     class="text-error"
     (click)="confirmDelete()"
   >
-    Delete
+    Borrar
   </button>
 </mat-dialog-actions>

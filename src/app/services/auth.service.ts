@@ -26,9 +26,9 @@ export class AuthService {
     const body = new HttpParams()
       .set('username', username)
       .set('password', password)
-      .set('grant_type', '')
-      .set('client_id', '')
-      .set('client_secret', '')
+      .set('grant_type', 'password')
+      .set('client_id', 'lid-shop-platform')
+      .set('client_secret', 'P96QuHABA9Q5dIY8NTcBEdZQZIYvMwer')
     
     return this.http.post<LoginResponse>(`${this.baseUrl}/token`, body.toString(), { headers }).pipe(
       tap((resp) => {

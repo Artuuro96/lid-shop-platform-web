@@ -4,19 +4,23 @@ import {
   Component,
   inject,
   OnInit,
+  OnChanges,
+  SimpleChanges,
+  Input,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconModule } from 'src/app/icon/icon.module';
 import { MaterialModule } from 'src/app/material.module';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProductService } from 'src/app/services/apps/product/product.service';
 import { Element, PRODUCT_DATA } from '../ecommerceData';
+import { InventoryArticle } from 'src/app/interfaces/inventory-article.interface';
 
 export interface Section {
   name: string;
@@ -25,17 +29,20 @@ export interface Section {
 
 @Component({
   selector: 'app-shop',
+  standalone: true,
   imports: [
     MaterialModule,
     IconModule,
     CommonModule,
     FormsModule,
     NgScrollbarModule,
+    RouterModule,
   ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.scss',
 })
-export class ShopComponent implements OnInit {
+export class ShopComponent implements OnInit, OnChanges {
+  @Input() items: Element[] | null = null;
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
@@ -46,6 +53,8 @@ export class ShopComponent implements OnInit {
   durationInSeconds = 1;
   searchText: string = '';
 
+  // Backing list used for all filters/sorts; initialized from items or mock data
+  allCards: Element[] = PRODUCT_DATA;
   filteredCards: Element[] = PRODUCT_DATA;
   folders: Section[] = [
     { name: 'all', icon: 'users' },
@@ -90,13 +99,23 @@ export class ShopComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    
+    // Initialize with external items when provided, fallback to mock data
+    this.allCards = this.items ?? PRODUCT_DATA;
+    this.filteredCards = [...this.allCards];
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['items']) {
+      this.allCards = this.items ?? PRODUCT_DATA;
+      this.filteredCards = [...this.allCards];
+      this.cdr.detectChanges();
+    }
   }
 
   filterCards() {
     const text = this.searchText.toLowerCase();
-  
-    this.filteredCards = PRODUCT_DATA.filter(
+    
+    this.filteredCards = this.allCards.filter(
       (card) =>
         card.product_name.toLowerCase().includes(text) ||
         card.categories.join(' ').toLowerCase().includes(text)
@@ -106,9 +125,9 @@ export class ShopComponent implements OnInit {
   getCategory(name: string): void {
     this.selectedCategory = name;
     if (name.toLowerCase() === 'all') {
-      this.filteredCards = [...PRODUCT_DATA];
+      this.filteredCards = [...this.allCards];
     } else {
-      this.filteredCards = PRODUCT_DATA.filter((card) =>
+      this.filteredCards = this.allCards.filter((card) =>
         card.categories.some(
           (cat) => cat.toLowerCase() === name.toLowerCase()
         )
@@ -124,7 +143,7 @@ export class ShopComponent implements OnInit {
 
     switch (nameLower) {
       case 'newest':
-        this.filteredCards = [...PRODUCT_DATA].sort((a, b) => {
+        this.filteredCards = [...this.allCards].sort((a, b) => {
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
           return dateB.getTime() - dateA.getTime(); // Newest first
@@ -133,20 +152,20 @@ export class ShopComponent implements OnInit {
 
       case 'base_price: hiah-low':
       case 'base_price: high-low':
-        this.filteredCards = [...PRODUCT_DATA].sort(
+        this.filteredCards = [...this.allCards].sort(
           (a, b) => +b.base_price - +a.base_price
         );
         break;
 
       case 'base_price: low-hiah':
       case 'base_price: low-high':
-        this.filteredCards = [...PRODUCT_DATA].sort(
+        this.filteredCards = [...this.allCards].sort(
           (a, b) => +a.base_price - +b.base_price
         );
         break;
 
       case 'discounted':
-        this.filteredCards = [...PRODUCT_DATA].sort((a, b) => {
+        this.filteredCards = [...this.allCards].sort((a, b) => {
           const discountA = +a.dealPrice - +a.base_price;
           const discountB = +b.dealPrice - +b.base_price;
           return discountB - discountA;
@@ -154,15 +173,15 @@ export class ShopComponent implements OnInit {
         break;
 
       default:
-        this.filteredCards = [...PRODUCT_DATA];
+        this.filteredCards = [...this.allCards];
     }
   }
 
   getGender(gender: string): void {
     if (gender.toLowerCase() === 'all') {
-      this.filteredCards = [...PRODUCT_DATA];
+      this.filteredCards = [...this.allCards];
     } else {
-      this.filteredCards = PRODUCT_DATA.filter(
+      this.filteredCards = this.allCards.filter(
         (card) => card.gender === gender.toLowerCase()
       );
     }
@@ -172,44 +191,44 @@ export class ShopComponent implements OnInit {
 
     switch (base_priceRange) {
       case '0-50':
-        this.filteredCards = PRODUCT_DATA.filter(
+        this.filteredCards = this.allCards.filter(
           (card) => +card.base_price >= 0 && +card.base_price <= 50
         );
         break;
 
       case '50-100':
-        this.filteredCards = PRODUCT_DATA.filter(
+        this.filteredCards = this.allCards.filter(
           (card) => +card.base_price > 50 && +card.base_price <= 100
         );
         break;
 
       case '100-200':
-        this.filteredCards = PRODUCT_DATA.filter(
+        this.filteredCards = this.allCards.filter(
           (card) => +card.base_price > 100 && +card.base_price <= 200
         );
         break;
 
       case 'over-200':
-        this.filteredCards = PRODUCT_DATA.filter(
+        this.filteredCards = this.allCards.filter(
           (card) => +card.base_price > 200
         );
         break;
 
       case 'all':
       default:
-        this.filteredCards = [...PRODUCT_DATA];
+        this.filteredCards = [...this.allCards];
         break;
     }
   }
   getRestFilter() {
     this.selectedCategory = this.folders[0].name;
     this.selectedSortBy = this.notes[0].name;
-    this.filteredCards = [...PRODUCT_DATA];
+    this.filteredCards = [...this.allCards];
   }
 
   getProductList() {
     this.searchText = '';
-    this.filteredCards = [...PRODUCT_DATA];
+    this.filteredCards = [...this.allCards];
   }
 
   isOver(): boolean {
@@ -217,7 +236,7 @@ export class ShopComponent implements OnInit {
   }
 
   getAddProductRoute() {
-    this.router.navigate(['apps/product/add-product']);
+    this.router.navigate(['inventario/producto/nuevo']);
   }
   openDialog(idOrIds: number | number[]): void {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
@@ -260,7 +279,7 @@ export class ShopComponent implements OnInit {
   toggleColor(color: string): void {
     this.selectedColor = this.selectedColor === color ? null : color;
   }
-  getEditedProduct(productcardDetails: Element) {
+  getEditedProduct(productcardDetails: InventoryArticle) {
     this.productService.setProduct(productcardDetails);
     this.router.navigate(['apps/product/edit-product']);
   }

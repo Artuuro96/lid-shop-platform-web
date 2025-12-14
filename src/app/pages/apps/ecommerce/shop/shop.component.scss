@@ -4,7 +4,8 @@
   img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 160px; // smaller fixed height for consistent card images
+    object-fit: cover; // crop to fill without distortion
   }
 
   .icon-container {

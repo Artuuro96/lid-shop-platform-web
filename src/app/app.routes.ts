@@ -99,11 +99,23 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'apps/product/add-product',
+        path: 'inventario/producto/nuevo',
         loadComponent: () =>
           import('./pages/apps/ecommerce/add-product/add-product.component').then(
             (m) => m.AddProductComponent
           ),
+      },
+      {
+        path: 'producto/editar',
+        loadComponent: () =>
+          import('./pages/apps/ecommerce/add-product/add-product.component').then(
+            (m) => m.AddProductComponent
+          ),
+      },
+      {
+        path: 'apps/product/add-product',
+        redirectTo: '/inventario/producto/nuevo',
+        pathMatch: 'full',
       },
     ],
   },

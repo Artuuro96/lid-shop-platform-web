@@ -4,9 +4,11 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
-  NgZone,
   OnInit,
   ViewChild,
+  Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MaterialModule } from 'src/app/material.module';
@@ -20,15 +22,16 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { ProductService } from 'src/app/services/apps/product/product.service';
-import { Element, PRODUCT_DATA } from './ecommerceData';
+import { Element } from './ecommerceData';
 
 @Component({
   selector: 'app-ecommerce',
+  standalone: true,
   imports: [MaterialModule, CommonModule, IconModule],
   templateUrl: './ecommerce.component.html',
   styleUrl: './ecommerce.component.scss',
 })
-export class ProductComponent implements AfterViewInit, OnInit {
+export class ProductComponent implements AfterViewInit, OnInit, OnChanges {
   @ViewChild(MatTable) table!: MatTable<Element>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
     Object.create(null);
@@ -37,6 +40,7 @@ export class ProductComponent implements AfterViewInit, OnInit {
   private productService =  inject(ProductService);
   readonly dialog = inject(MatDialog);
   
+  @Input() items: Element[] | null = null;
 
   displayedColumns: string[] = [
     'select',
@@ -45,7 +49,7 @@ export class ProductComponent implements AfterViewInit, OnInit {
     'status',
     'base_price',
   ];
-  dataSource = new MatTableDataSource<Element>(PRODUCT_DATA);
+  dataSource!: MatTableDataSource<Element>;
   selection = new SelectionModel<Element>(true, []);
   durationInSeconds = 1;
   constructor(
@@ -68,6 +72,9 @@ export class ProductComponent implements AfterViewInit, OnInit {
       });
   }
   ngOnInit(): void {
+    // Initialize dataSource with external items if provided, else fallback to mock data
+    this.dataSource = new MatTableDataSource<Element>(this.items ?? []);
+
     this.getAddedTableData();
     this.productService.productUpdated.subscribe((updatedProduct: any) => {
       // Ensure updatedProduct has an id and dataSource is an array
@@ -113,6 +120,22 @@ export class ProductComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['items'] && this.dataSource) {
+      const nextItems: Element[] = this.items ?? [];
+      this.dataSource.data = nextItems.length ? nextItems : [];
+      if (this.paginator) {
+        this.paginator.pageIndex = 0;
+        this.dataSource.paginator = this.paginator;
+      }
+      setTimeout(() => {
+        if (this.table) {
+          this.table.renderRows();
+        }
+      });
+    }
   }
 
   applyFilter(event: Event) {
@@ -208,10 +231,10 @@ export class ProductComponent implements AfterViewInit, OnInit {
       }
     });
   }
-
- 
+  
+  
   getEditProduct(element?: Element) {
-    const productToEdit = element || PRODUCT_DATA[0];
+    const productToEdit = element || this.dataSource.data[0];
     this.productService.setProduct(productToEdit); // Store product to localStorage/service
     this.router.navigate(['apps/product/edit-product']); // Navigate to edit page
   }
@@ -287,6 +310,6 @@ export class ProductComponent implements AfterViewInit, OnInit {
     this.selection.clear(); // Clear selection after deletion
   }
   getAddProductNavigate(){
-    this.router.navigate(['apps/product/add-product'])
+    this.router.navigate(['inventario/producto/nuevo'])
   }
 }

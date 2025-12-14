@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Nueva Categoria</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="m-t-8">
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Nombre de la categoría</mat-label>
+      <input matInput formControlName="name" placeholder="Ej. Electrónica" />
+      <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="descripcion" rows="3" placeholder="Describe la categoría"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Siglas</mat-label>
+      <input matInput formControlName="siglas" placeholder="Ej. ELEC" />
+    </mat-form-field>
+  </form>
+  </mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+</mat-dialog-actions>

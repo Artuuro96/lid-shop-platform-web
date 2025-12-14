@@ -24,7 +24,7 @@ export class ImageSliderComponent {
   next() {
     console.log('next--->',this.visibleTeamMembers().map(m => m.id));
     const totalPages = Math.ceil(this.team.length / this.pageSize);
-    if (this.currentPage() < totalPages - 1) {
+    if (this.currentPage() < totalPages ) {
       this.currentPage.update((p) => p + 1);
     }
   }
