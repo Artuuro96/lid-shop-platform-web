@@ -26,13 +26,31 @@ import { CommonModule } from '@angular/common';
   selector: 'app-nav-item',
   imports: [TranslateModule, TablerIconsModule, MaterialModule, CommonModule],
   templateUrl: './nav-item.component.html',
-  styleUrls: [],
+  styles: [`
+    .menu-list-item {
+      transition: padding-left 225ms ease;
+    }
+    .submenu-container {
+      margin-left: 8px;
+      border-left: 1px solid rgba(0,0,0,0.12);
+      padding-left: 8px;
+    }
+  `],
   animations: [
     trigger('indicatorRotate', [
       state('collapsed', style({ transform: 'rotate(0deg)' })),
       state('expanded', style({ transform: 'rotate(180deg)' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4,0.0,0.2,1)')),
     ]),
+    trigger('expandCollapse', [
+      transition(':enter', [
+        style({ height: 0, opacity: 0 }),
+        animate('225ms cubic-bezier(0.4,0.0,0.2,1)', style({ height: '*', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('225ms cubic-bezier(0.4,0.0,0.2,1)', style({ height: 0, opacity: 0 }))
+      ])
+    ])
   ]
 })
 export class AppNavItemComponent implements OnChanges {
@@ -55,7 +73,8 @@ export class AppNavItemComponent implements OnChanges {
   ngOnChanges() {
     const url = this.navService.currentUrl();
     if (this.item.route && url) {
-      this.expanded = url.indexOf(`/${this.item.route}`) === 0;
+      const route = this.item.route.startsWith('/') ? this.item.route : `/${this.item.route}`;
+      this.expanded = url.indexOf(route) === 0;
       this.ariaExpanded = this.expanded;
     }
   }

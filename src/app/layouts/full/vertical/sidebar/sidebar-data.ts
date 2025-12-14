@@ -12,14 +12,26 @@ export const navItems: NavItem[] = [
     route: '/clientes',
   },
   {
-    displayName: 'Pedidos',
+    displayName: 'Ventas',
     iconName: 'shopping-cart',
-    route: '/pedidos',
-  },
-  {
-    displayName: 'Órdenes',
-    iconName: 'receipt',
-    route: '/ordenes',
+    route: '/ventas',
+    children: [
+      {
+        displayName: 'Pedidos',
+        iconName: 'clipboard',
+        route: '/ventas/pedidos',
+      },
+      {
+        displayName: 'Órdenes',
+        iconName: 'receipt',
+        route: '/ventas/ordenes',
+      },
+      {
+        displayName: 'Pagos',
+        iconName: 'cash',
+        route: '/ventas/pagos',
+      },
+    ],
   },
   {
     displayName: 'Inventario',

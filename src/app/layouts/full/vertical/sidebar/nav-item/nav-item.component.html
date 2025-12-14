@@ -9,7 +9,7 @@
       : false,
     expanded: expanded, activemenu: isChildActive(item),
     disabled: item.disabled
-  }" class="menu-list-item">
+  }" class="menu-list-item" [style.paddingLeft.px]="depth * 16">
   <i-tabler class="routeIcon" name="{{ item.iconName }}" matListItemIcon></i-tabler>
   <span class="hide-menu">{{ item.displayName | translate }}</span>
   <div class="d-flex align-items-center gap-4">
@@ -45,7 +45,10 @@
 }
 
 <!-- children -->
-@if(expanded) { @for(child of item.children; track child) {
-<app-nav-item [item]="child" (click)="onSubItemSelected(child)" [depth]="depth + 1">
-</app-nav-item>
-} }
+@if(expanded) {
+  <div class="submenu-container" [@expandCollapse]>
+    @for(child of item.children; track child) {
+      <app-nav-item [item]="child" (click)="onSubItemSelected(child)" [depth]="depth + 1"></app-nav-item>
+    }
+  </div>
+}

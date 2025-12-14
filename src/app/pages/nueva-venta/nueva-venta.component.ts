@@ -220,7 +220,7 @@ export class NuevaVentaComponent {
   }
 
   goBack() {
-    this.router.navigate(['/pedidos']);
+    this.router.navigate(['/ventas/pedidos']);
   }
 
   agregarProducto() {

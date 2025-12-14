@@ -42,32 +42,48 @@ export const routes: Routes = [
             (m) => m.ClientEditComponent
           ),
       },
+      // Ventas parent with nested routes
       {
-        path: 'pedidos',
-        loadComponent: () =>
-          import('./pages/orders/orders.component').then(
-            (m) => m.OrdersComponent
-          ),
+        path: 'ventas',
+        children: [
+          {
+            path: 'pedidos',
+            loadComponent: () =>
+              import('./pages/orders/orders.component').then(
+                (m) => m.OrdersComponent
+              ),
+          },
+          {
+            path: 'pedidos/:id',
+            loadComponent: () =>
+              import('./pages/order-detail/order-detail.component').then(
+                (m) => m.OrderDetailComponent
+              ),
+          },
+          {
+            path: 'ordenes',
+            loadComponent: () =>
+              import('./pages/orders/orders.component').then(
+                (m) => m.OrdersComponent
+              ),
+          },
+          {
+            path: 'pagos',
+            loadComponent: () =>
+              import('./pages/transacciones/transacciones.component').then(
+                (m) => m.TransaccionesComponent
+              ),
+          },
+        ],
       },
-      {
-        path: 'pedidos/:id',
-        loadComponent: () =>
-          import('./pages/order-detail/order-detail.component').then(
-            (m) => m.OrderDetailComponent
-          ),
-      },
+      // Legacy redirects to new ventas paths
+      { path: 'pedidos', redirectTo: '/ventas/pedidos', pathMatch: 'full' },
+      { path: 'pedidos/:id', redirectTo: '/ventas/pedidos/:id', pathMatch: 'full' },
       {
         path: 'nueva-venta',
         loadComponent: () =>
           import('./pages/nueva-venta/nueva-venta.component').then(
             (m) => m.NuevaVentaComponent
-          ),
-      },
-      {
-        path: 'ordenes',
-        loadComponent: () =>
-          import('./pages/orders/orders.component').then(
-            (m) => m.OrdersComponent
           ),
       },
       {
