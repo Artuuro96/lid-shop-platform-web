@@ -88,10 +88,27 @@ export const routes: Routes = [
       },
       {
         path: 'inventario',
-        loadComponent: () =>
-          import('./pages/inventario/inventario.component').then(
-            (m) => m.InventarioComponent
-          ),
+        children: [
+          {
+            path: '',
+            redirectTo: '/inventario/productos',
+            pathMatch: 'full',
+          },
+          {
+            path: 'productos',
+            loadComponent: () =>
+              import('./pages/inventario/inventario.component').then(
+                (m) => m.InventarioComponent
+              ),
+          },
+          {
+            path: 'actualizaciones',
+            loadComponent: () =>
+              import('./pages/inventario/inventario.component').then(
+                (m) => m.InventarioComponent
+              ),
+          },
+        ],
       },
       {
         path: 'transacciones',

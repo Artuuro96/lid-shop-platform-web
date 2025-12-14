@@ -324,7 +324,7 @@ export class AddProductComponent implements OnInit {
     this.tags = this.tags.filter((t) => t !== tag);
   }
   getBack() {
-    this.router.navigate(['/inventario']);
+    this.router.navigate(['/inventario/productos']);
   }
   getAddProduct(data: any) {
     const formData = this.AddProduct.getRawValue();

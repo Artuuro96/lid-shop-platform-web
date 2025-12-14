@@ -37,6 +37,18 @@ export const navItems: NavItem[] = [
     displayName: 'Inventario',
     iconName: 'box',
     route: '/inventario',
+    children: [
+      {
+        displayName: 'Productos',
+        iconName: 'package',
+        route: '/inventario/productos',
+      },
+      {
+        displayName: 'Actualizaciones',
+        iconName: 'history',
+        route: '/inventario/actualizaciones',
+      },
+    ],
   },
   {
     displayName: 'Transacciones',
